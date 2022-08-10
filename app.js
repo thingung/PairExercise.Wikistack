@@ -2,7 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 
 const app = express()
-const { db } = require('./models');
+const { db, Page, User } = require('./models');
 
 app.use(express.urlencoded({extended: false}))
 app.use(morgan("dev"));
@@ -13,9 +13,15 @@ app.use(express.static(__dirname + "/public"));
 
 const PORT = 8080
 
-app.listen(PORT, () => {
-  console.log(`App listening at http://localhost:${PORT}`);
-});
+const init = async () => {
+  await db.sync({force: true});
+
+  app.listen(PORT, () => {
+    console.log(`App listening at http://localhost:${PORT}`);
+  });
+}
+
+init();
 
 db.authenticate()
   .then(() => {
