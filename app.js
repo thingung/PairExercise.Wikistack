@@ -1,15 +1,23 @@
 const express = require('express')
-const morgan = require('morgan')
-
 const app = express()
+
 const { db, Page, User } = require('./models');
 
-app.use(express.urlencoded({extended: false}))
-app.use(morgan("dev"));
+const users_router = require("./routes/users");
+const wiki_router = require("./routes/wiki");
+const layout = require('./views/layout');
 
-const layout = require('./views/layout')
+app.use(express.urlencoded({extended: false}));
 
 app.use(express.static(__dirname + "/public"));
+
+// We are assigning / as /wiki
+app.use('/wiki', wiki_router);
+
+app.get("/", (req, res) => {
+  res.redirect("/wiki/");
+});
+
 
 const PORT = 8080
 
@@ -28,7 +36,7 @@ db.authenticate()
     console.log('connected to the database');
   })
 
-app.get('/', (req, res) => {
-  res.send(layout('hello this should work'))
-})
+// app.get('/', (req, res) => {
+//   res.send(layout('hello this should work'))
+// })
 
