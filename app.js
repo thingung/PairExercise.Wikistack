@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 
 const app = express()
+const { db } = require('./models');
 
 app.use(express.urlencoded({extended: false}))
 app.use(morgan("dev"));
@@ -16,18 +17,12 @@ app.listen(PORT, () => {
   console.log(`App listening at http://localhost:${PORT}`);
 });
 
+db.authenticate()
+  .then(() => {
+    console.log('connected to the database');
+  })
+
 app.get('/', (req, res) => {
   res.send(layout('hello this should work'))
 })
 
-
-// `
-//     <html>
-//      <head>
-//       <title>My site</title>
-//      </head>
-//      <body>
-//       <h1>Hello World</h1>
-//      </body>
-//     </html>
-//   `
